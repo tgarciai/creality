@@ -1,5 +1,17 @@
 #!/bin/sh
 
+# GitHub owner for each klipper fork: kalico comes from our own fork
+KALICO_REPO_OWNER=tgarciai
+KLIPPER_REPO_OWNER=pellcorp
+
+function klipper_repo_url() {
+    if [ "$1" = "kalico" ]; then
+        echo "https://github.com/${KALICO_REPO_OWNER}/$1.git"
+    else
+        echo "https://github.com/${KLIPPER_REPO_OWNER}/$1.git"
+    fi
+}
+
 # this is the minimum pellcorp/klipper commit
 KLIPPER_MINIMUM_COMMIT=cbda3771337a62cf6f2eae1d5f96c3aa9609af76
 
@@ -883,7 +895,7 @@ function install_klipper() {
 
         if [ ! -d /usr/data/klipper/.git ]; then
             echo "INFO: Installing ${klipper_fork} ..."
-            git clone https://github.com/pellcorp/${klipper_fork}.git /usr/data/klipper || exit $?
+            git clone $(klipper_repo_url ${klipper_fork}) /usr/data/klipper || exit $?
             echo
 
             [ -d /usr/share/klipper ] && rm -rf /usr/share/klipper
@@ -2262,7 +2274,7 @@ elif [ "$1" = "--kalico" ] && [ "$#" -eq 1 ]; then
     fi
 
     if [ ! -d /usr/data/klipper ]; then
-        git clone https://github.com/pellcorp/${klipper_repo}.git /usr/data/klipper || exit $?
+        git clone $(klipper_repo_url ${klipper_repo}) /usr/data/klipper || exit $?
     else
         update_repo /usr/data/klipper $3 || exit $?
     fi
